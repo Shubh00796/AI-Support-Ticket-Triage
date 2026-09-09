@@ -12,4 +12,7 @@ public class AiApplication {
 		SpringApplication.run(AiApplication.class, args);
 	}
 
+
+
+
 }
