@@ -1,6 +1,7 @@
 package com.ai_support_ticket_triage.ai.entity;
 
-import com.ai_support_ticket_triage.ai.enums.TicketStatus;
+import com.ai_support_ticket_triage.ai.classification.TicketClassification;
+import com.ai_support_ticket_triage.ai.enums.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,6 +27,25 @@ public class Ticket {
     @Column(nullable = false, length = 20)
     private TicketStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private TicketCategory category;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private TicketPriority priority;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 30)
+    private SupportTeam team;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private TicketSentiment sentiment;
+
+    @Column(length = 1000)
+    private String classificationReason;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -33,6 +53,21 @@ public class Ticket {
         this.message = message;
         this.status = TicketStatus.OPEN;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public void applyClassification(TicketClassification classification) {
+
+        if (classification == null) {
+            throw new IllegalArgumentException(
+                    "Ticket classification must not be null"
+            );
+        }
+
+        this.category = classification.category();
+        this.priority = classification.priority();
+        this.team = classification.team();
+        this.sentiment = classification.sentiment();
+        this.classificationReason = classification.reason();
     }
 
     public void updateMessage(String message) {
