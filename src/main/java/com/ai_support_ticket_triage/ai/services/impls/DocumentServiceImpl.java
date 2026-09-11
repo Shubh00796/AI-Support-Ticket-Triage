@@ -1,21 +1,22 @@
 package com.ai_support_ticket_triage.ai.services.impls;
 
-
 import com.ai_support_ticket_triage.ai.dto.responce.DocumentUploadResponse;
-import com.ai_support_ticket_triage.ai.entity.Document;
-import com.ai_support_ticket_triage.ai.exceptions.DocumentParsingException;
+import com.ai_support_ticket_triage.ai.entity.AiDocument;
 import com.ai_support_ticket_triage.ai.normalization.TextNormalizer;
 import com.ai_support_ticket_triage.ai.parser.DocumentParser;
 import com.ai_support_ticket_triage.ai.parser.DocumentParserResolver;
+import com.ai_support_ticket_triage.ai.parser.ParsedPage;
 import com.ai_support_ticket_triage.ai.reposiotry.DocumentRepository;
 import com.ai_support_ticket_triage.ai.services.DocumentService;
 import com.ai_support_ticket_triage.ai.validations.DocumentValidator;
+import com.ai_support_ticket_triage.ai.validations.ValidatedDocument;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,60 +31,67 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public DocumentUploadResponse upload(MultipartFile file) {
 
-        documentValidator.validate(file);
+        ValidatedDocument validatedDocument =
+                documentValidator.validate(file);
 
         DocumentParser parser =
-                parserResolver.resolve(file.getContentType());
+                parserResolver.resolve(
+                        validatedDocument.detectedContentType()
+                );
 
-        String rawText = parser.parse(readBytes(file));
+        List<ParsedPage> pages =
+                parser.parse(validatedDocument.content());
+
+        String rawText =
+                extractRawText(pages);
 
         String normalizedText =
                 textNormalizer.normalize(rawText);
 
-        Document document =
-                createDocument(file, rawText, normalizedText);
+        AiDocument aiDocument =
+                createDocument(
+                        validatedDocument,
+                        rawText,
+                        normalizedText
+                );
 
-        Document savedDocument =
-                documentRepository.save(document);
+        AiDocument savedAiDocument =
+                documentRepository.save(aiDocument);
 
-        return toUploadResponse(savedDocument);
+        return toUploadResponse(savedAiDocument);
     }
 
+    private String extractRawText(List<ParsedPage> pages) {
 
+        return pages.stream()
+                .map(ParsedPage::text)
+                .collect(Collectors.joining("\n\n"));
+    }
 
-    private Document createDocument(
-            MultipartFile file,
+    private AiDocument createDocument(
+            ValidatedDocument validatedDocument,
             String rawText,
             String normalizedText
     ) {
-        return new Document(
-                file.getOriginalFilename(),
-                file.getContentType(),
-                file.getSize(),
+        return new AiDocument(
+                validatedDocument.fileName(),
+                validatedDocument.detectedContentType(),
+                validatedDocument.content().length,
                 rawText,
                 normalizedText
         );
     }
 
-    private DocumentUploadResponse toUploadResponse(Document document) {
+    private DocumentUploadResponse toUploadResponse(
+            AiDocument aiDocument
+    ) {
         return new DocumentUploadResponse(
-                document.getId(),
-                document.getFileName(),
-                document.getContentType(),
-                document.getFileSize(),
-                document.getNormalizedText().length(),
-                document.getCreatedAt()
+                aiDocument.getId(),
+                aiDocument.getFileName(),
+                aiDocument.getContentType(),
+                aiDocument.getFileSize(),
+                aiDocument.getNormalizedText().length(),
+                aiDocument.getCreatedAt()
         );
-    }
-
-    private byte[] readBytes(MultipartFile file) {
-        try {
-            return file.getBytes();
-        } catch (IOException e) {
-            throw new DocumentParsingException(
-                    "Failed to read uploaded document"
-
-            );
-        }
     }
 }

@@ -1,8 +1,10 @@
 package com.ai_support_ticket_triage.ai.parser;
 
+import java.util.List;
+
 public interface DocumentParser {
 
     boolean supports(String contentType);
 
-    String parse(byte[] content);
+    List<ParsedPage> parse(byte[] content);
 }

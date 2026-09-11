@@ -20,8 +20,8 @@ public class TicketClassificationResponseParser {
             );
         } catch (Exception e) {
             throw new TicketClassificationParseException(
-                    "Failed to parse ticket classification response"
-
+                    "Failed to parse ticket classification response",
+                    e
             );
         }
     }

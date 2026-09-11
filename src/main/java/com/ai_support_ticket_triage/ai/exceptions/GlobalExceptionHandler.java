@@ -78,6 +78,36 @@ public class GlobalExceptionHandler {
                 .body(error);
     }
 
+    @ExceptionHandler(DocumentValidationException.class)
+    public ResponseEntity<ApiError> handleDocumentValidationException(
+            DocumentValidationException ex,
+            HttpServletRequest request) {
+
+        ApiError error = getApiError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request
+        );
+
+        return ResponseEntity.badRequest()
+                .body(error);
+    }
+
+    @ExceptionHandler(UnsupportedDocumentTypeException.class)
+    public ResponseEntity<ApiError> handleUnsupportedDocumentTypeException(
+            UnsupportedDocumentTypeException ex,
+            HttpServletRequest request) {
+
+        ApiError error = getApiError(
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                ex.getMessage(),
+                request
+        );
+
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                .body(error);
+    }
+
     /**
      * Handles unexpected exceptions.
      *
