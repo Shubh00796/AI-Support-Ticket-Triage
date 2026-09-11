@@ -1,6 +1,7 @@
-package com.ai_support_ticket_triage.ai.classification;
+package com.ai_support_ticket_triage.ai.validations;
 
 
+import com.ai_support_ticket_triage.ai.classification.TicketClassification;
 import org.springframework.stereotype.Component;
 
 @Component

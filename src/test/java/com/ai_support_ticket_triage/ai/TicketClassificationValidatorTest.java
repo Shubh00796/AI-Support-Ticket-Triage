@@ -2,7 +2,7 @@ package com.ai_support_ticket_triage.ai;
 
 
 import com.ai_support_ticket_triage.ai.classification.TicketClassification;
-import com.ai_support_ticket_triage.ai.classification.TicketClassificationValidator;
+import com.ai_support_ticket_triage.ai.validations.TicketClassificationValidator;
 import com.ai_support_ticket_triage.ai.enums.SupportTeam;
 import com.ai_support_ticket_triage.ai.enums.TicketCategory;
 import com.ai_support_ticket_triage.ai.enums.TicketPriority;

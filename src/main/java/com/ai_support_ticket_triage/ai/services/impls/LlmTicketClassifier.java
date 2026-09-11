@@ -4,7 +4,7 @@ package com.ai_support_ticket_triage.ai.services.impls;
 import com.ai_support_ticket_triage.ai.classification.TicketClassification;
 import com.ai_support_ticket_triage.ai.classification.TicketClassificationPromptBuilder;
 import com.ai_support_ticket_triage.ai.classification.TicketClassificationResponseParser;
-import com.ai_support_ticket_triage.ai.classification.TicketClassificationValidator;
+import com.ai_support_ticket_triage.ai.validations.TicketClassificationValidator;
 import com.ai_support_ticket_triage.ai.entity.Ticket;
 import com.ai_support_ticket_triage.ai.ollama.OllamaClient;
 import com.ai_support_ticket_triage.ai.services.AiClassifier;
