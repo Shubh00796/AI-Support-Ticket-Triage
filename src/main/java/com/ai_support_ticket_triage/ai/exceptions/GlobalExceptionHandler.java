@@ -136,6 +136,11 @@ public class GlobalExceptionHandler {
      * @return standardized API error payload
      */
     private static ApiError getApiError(HttpStatus status, String message, HttpServletRequest request) {
+        ApiError error = getError(status, message, request);
+        return error;
+    }
+
+    private static ApiError getError(HttpStatus status, String message, HttpServletRequest request) {
         ApiError error = ApiError.builder()
                 .timestamp(LocalDateTime.now())
                 .status(status.value())
