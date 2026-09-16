@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @Entity
 @Table(
-        name = "document_chunks",
+        name = "document_chunks_ai",
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_document_chunk_index",

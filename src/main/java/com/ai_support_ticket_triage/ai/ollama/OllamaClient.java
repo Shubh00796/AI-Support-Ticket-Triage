@@ -1,6 +1,6 @@
 package com.ai_support_ticket_triage.ai.ollama;
 
-
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -13,7 +13,7 @@ public class OllamaClient {
     private final String chatModel;
 
     public OllamaClient(
-            RestClient restClient,
+            @Qualifier("ollamaRestClient") RestClient restClient,
             OllamaProperties properties
     ) {
         this.restClient = restClient;
