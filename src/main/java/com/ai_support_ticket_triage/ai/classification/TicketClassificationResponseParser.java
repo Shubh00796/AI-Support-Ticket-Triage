@@ -12,6 +12,12 @@ public class TicketClassificationResponseParser {
     private final JsonMapper jsonMapper;
 
     public TicketClassification parse(String response) {
+        if (response == null || response.isBlank()) {
+            throw new TicketClassificationParseException(
+                    "Failed to parse ticket classification response",
+                    new IllegalArgumentException("Classification response must not be blank")
+            );
+        }
 
         try {
             return jsonMapper.readValue(

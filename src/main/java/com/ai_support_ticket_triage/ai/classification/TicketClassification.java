@@ -5,8 +5,6 @@ import com.ai_support_ticket_triage.ai.enums.TicketCategory;
 import com.ai_support_ticket_triage.ai.enums.TicketPriority;
 import com.ai_support_ticket_triage.ai.enums.TicketSentiment;
 
-import java.util.Objects;
-
 public record TicketClassification(
         TicketCategory category,
         TicketPriority priority,
@@ -17,10 +15,18 @@ public record TicketClassification(
 
     public TicketClassification {
 
-        Objects.requireNonNull(category, "Category must not be null");
-        Objects.requireNonNull(priority, "Priority must not be null");
-        Objects.requireNonNull(team, "Support team must not be null");
-        Objects.requireNonNull(sentiment, "Sentiment must not be null");
+        if (category == null) {
+            throw new IllegalArgumentException("Category must not be null");
+        }
+        if (priority == null) {
+            throw new IllegalArgumentException("Priority must not be null");
+        }
+        if (team == null) {
+            throw new IllegalArgumentException("Support team must not be null");
+        }
+        if (sentiment == null) {
+            throw new IllegalArgumentException("Sentiment must not be null");
+        }
 
         if (reason == null || reason.isBlank()) {
             throw new IllegalArgumentException(

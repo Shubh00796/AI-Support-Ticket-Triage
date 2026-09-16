@@ -50,6 +50,12 @@ public class Ticket {
     private LocalDateTime createdAt;
 
     public Ticket(String message) {
+        if (message == null || message.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Ticket message must not be blank"
+            );
+        }
+
         this.message = message;
         this.status = TicketStatus.OPEN;
         this.createdAt = LocalDateTime.now();

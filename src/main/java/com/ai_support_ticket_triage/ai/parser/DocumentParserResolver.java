@@ -19,6 +19,17 @@ public class DocumentParserResolver {
     public DocumentParser resolve(
             String detectedContentType
     ) {
+        if (detectedContentType == null || detectedContentType.isBlank()) {
+            throw new UnsupportedDocumentTypeException(
+                    "Document content type must not be blank"
+            );
+        }
+
+        if (parsers.isEmpty()) {
+            throw new UnsupportedDocumentTypeException(
+                    "No document parsers are available"
+            );
+        }
 
         return parsers.stream()
                 .filter(parser ->

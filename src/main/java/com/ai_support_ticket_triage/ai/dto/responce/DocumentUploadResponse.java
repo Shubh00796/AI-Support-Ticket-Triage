@@ -10,6 +10,8 @@ public record DocumentUploadResponse(
         String contentType,
         long fileSize,
         int extractedTextLength,
-        LocalDateTime createdAt
+        int normalizedTextLength,
+
+                LocalDateTime createdAt
 ) {
 }

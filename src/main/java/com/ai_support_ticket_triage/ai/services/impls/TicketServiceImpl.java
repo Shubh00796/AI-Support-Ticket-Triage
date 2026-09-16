@@ -27,6 +27,11 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public TicketResponse createTicket(CreateTicketRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException(
+                    "Ticket request must not be null"
+            );
+        }
 
         Ticket ticket = new Ticket(request.message());
 

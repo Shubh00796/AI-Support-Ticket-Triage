@@ -37,8 +37,15 @@ public class DocumentValidator {
 
         validateBasicProperties(file);
 
+        String originalFileName = file.getOriginalFilename();
+        if (!StringUtils.hasText(originalFileName)) {
+            throw new DocumentValidationException(
+                    "Document filename must not be blank"
+            );
+        }
+
         String fileName =
-                StringUtils.cleanPath(file.getOriginalFilename());
+                StringUtils.cleanPath(originalFileName);
 
         validateFileName(fileName);
 
