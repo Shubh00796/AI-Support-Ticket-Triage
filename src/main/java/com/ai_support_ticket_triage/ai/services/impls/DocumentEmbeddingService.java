@@ -4,6 +4,7 @@ import com.ai_support_ticket_triage.ai.chunks.DocumentChunk;
 import com.ai_support_ticket_triage.ai.chunks.EmbeddedChunk;
 import com.ai_support_ticket_triage.ai.embeddings.Embedding;
 import com.ai_support_ticket_triage.ai.embeddings.EmbeddingService;
+import com.ai_support_ticket_triage.ai.vectors.VectorStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +16,10 @@ import java.util.Objects;
 public class DocumentEmbeddingService {
 
     private final EmbeddingService embeddingService;
+    private final VectorStore vectorStore;
 
     public List<EmbeddedChunk> embedChunks(List<DocumentChunk> chunks) {
+
         Objects.requireNonNull(chunks, "chunks must not be null");
 
         return chunks.stream()
@@ -31,15 +34,22 @@ public class DocumentEmbeddingService {
                 chunk,
                 "chunk must not be null"
         );
-        Embedding embedding = embeddingService.embed(chunk.text());
 
-        return new EmbeddedChunk(
-                null,
-                chunk.documentId(),
-                chunk.chunkIndex(),
-                chunk.pageNumber(),
-                chunk.text(),
-                embedding.vector()
-        );
+        Embedding embedding =
+                embeddingService.embed(chunk.text());
+
+        EmbeddedChunk embeddedChunk =
+                new EmbeddedChunk(
+                        null,
+                        chunk.documentId(),
+                        chunk.chunkIndex(),
+                        chunk.pageNumber(),
+                        chunk.text(),
+                        embedding.vector()
+                );
+
+        vectorStore.save(embeddedChunk);
+
+        return embeddedChunk;
     }
 }
