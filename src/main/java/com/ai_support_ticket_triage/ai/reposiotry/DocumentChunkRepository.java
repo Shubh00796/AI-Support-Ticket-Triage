@@ -12,4 +12,7 @@ public interface DocumentChunkRepository
     List<DocumentChunkEntity> findByDocumentIdOrderByChunkIndex(
             UUID documentId
     );
+    List<DocumentChunkEntity> findByIdIn(
+            List<UUID> ids
+    );
 }

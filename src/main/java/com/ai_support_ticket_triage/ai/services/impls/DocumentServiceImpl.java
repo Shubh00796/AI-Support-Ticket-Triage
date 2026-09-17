@@ -47,6 +47,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final DocumentChunker documentChunker;
     private final DocumentChunkMapper documentChunkMapper;
     private final DocumentChunkRepository documentChunkRepository;
+    private final DocumentEmbeddingService documentEmbeddingService;
 
     /**
      * Uploads and processes a document.
@@ -219,6 +220,12 @@ public class DocumentServiceImpl implements DocumentService {
                         .map(documentChunkMapper::toEntity)
                         .toList();
 
-        documentChunkRepository.saveAll(entities);
+        List<DocumentChunkEntity> savedEntities =
+                documentChunkRepository.saveAll(entities);
+
+        documentEmbeddingService.embedChunks(
+                chunks,
+                savedEntities
+        );
     }
 }
