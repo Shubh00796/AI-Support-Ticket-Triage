@@ -59,32 +59,22 @@ public class OllamaReranker implements Reranker {
             HybridSearchResult candidate
     ) {
         String prompt = """
-        You are a relevance evaluator for a customer-support knowledge base.
+            You are a document relevance evaluator.
 
-        Evaluate how relevant the document is to the user's query.
+            User query:
+            %s
 
-        User query:
-        %s
+            Document:
+            %s
 
-        Document:
-        %s
+            Give a relevance score from 0 to 1.
 
-        Scoring rules:
+            1.0 = directly answers the user's query
+            0.5 = somewhat related
+            0.0 = unrelated
 
-        1.0 = The document directly answers the query.
-        0.8 = The document contains highly relevant information needed
-              to answer the query.
-        0.5 = The document is related but does not directly answer it.
-        0.2 = The document has weak topical overlap.
-        0.0 = The document is unrelated.
-
-        Return ONLY valid JSON:
-
-        {
-          "score": 0.0,
-          "reason": "short explanation"
-        }
-        """.formatted(query, candidate.text());
+            Return ONLY the number.
+            """.formatted(query, candidate.text());
 
         return parseScore(ollamaClient.chat(prompt));
     }

@@ -37,7 +37,7 @@ class TicketClassificationControllerTest {
                 new TicketClassification(
                         TicketCategory.PAYMENT,
                         TicketPriority.HIGH,
-                        SupportTeam.BILLING,
+                        SupportTeam.BILLING_SUPPORT,
                         TicketSentiment.FRUSTRATED,
                         "Payment was deducted but order is still pending."
                 );

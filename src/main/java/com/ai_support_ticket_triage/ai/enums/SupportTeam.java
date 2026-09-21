@@ -7,7 +7,7 @@ package com.ai_support_ticket_triage.ai.enums;
  */
 public enum SupportTeam {
     /** Handles billing and payment-related issues */
-    BILLING,
+    BILLING_SUPPORT,
     /** Handles technical problems and bugs */
     TECHNICAL_SUPPORT,
     /** Handles account settings and access issues */

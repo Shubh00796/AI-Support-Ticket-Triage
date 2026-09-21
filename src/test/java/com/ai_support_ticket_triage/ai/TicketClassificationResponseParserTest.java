@@ -41,7 +41,7 @@ class TicketClassificationResponseParserTest {
 
         assertEquals(TicketCategory.PAYMENT, result.category());
         assertEquals(TicketPriority.HIGH, result.priority());
-        assertEquals(SupportTeam.BILLING, result.team());
+        assertEquals(SupportTeam.BILLING_SUPPORT, result.team());
         assertEquals(TicketSentiment.FRUSTRATED, result.sentiment());
         assertEquals(
                 "Payment was deducted but order is still pending.",
