@@ -1,14 +1,27 @@
 package com.ai_support_ticket_triage.ai.classification;
 
-
 import com.ai_support_ticket_triage.ai.entity.Ticket;
 import org.springframework.stereotype.Component;
 
+/**
+ * Builder for constructing LLM prompts for ticket classification.
+ *
+ * <p>Creates structured prompts that guide the LLM to classify
+ * tickets into specific categories and outputs valid JSON responses.</p>
+ */
 @Component
 public class TicketClassificationPromptBuilder {
 
-    public String build(Ticket ticket) {
-
+    /**
+     * Builds a classification prompt for the given ticket.
+     *
+     * <p>The prompt includes instructions for classification categories,
+     * priorities, teams, and sentiments, along with the ticket message.</p>
+     *
+     * @param ticket the ticket to classify
+     * @return the formatted prompt string for the LLM
+     */
+    public String build(final Ticket ticket) {
         return """
                 You are a support ticket classification system.
 

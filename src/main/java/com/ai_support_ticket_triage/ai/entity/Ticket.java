@@ -8,8 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * JPA entity representing a support ticket.
+ *
+ * <p>Immutable after construction (except through designated methods)
+ * with protected constructor to ensure proper encapsulation.</p>
+ */
 @Entity
 @Table(name = "tickets")
 @Getter
@@ -49,11 +56,18 @@ public class Ticket {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public Ticket(String message) {
-        if (message == null || message.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Ticket message must not be blank"
-            );
+    /**
+     * Creates a new ticket with the provided message.
+     *
+     * @param message the ticket message (non-blank)
+     * @throws NullPointerException if message is null
+     * @throws IllegalArgumentException if message is blank
+     */
+    public Ticket(final String message) {
+        Objects.requireNonNull(message, "Ticket message must not be null");
+
+        if (message.isBlank()) {
+            throw new IllegalArgumentException("Ticket message must not be blank");
         }
 
         this.message = message;
@@ -61,13 +75,17 @@ public class Ticket {
         this.createdAt = LocalDateTime.now();
     }
 
-    public void applyClassification(TicketClassification classification) {
-
-        if (classification == null) {
-            throw new IllegalArgumentException(
-                    "Ticket classification must not be null"
-            );
-        }
+    /**
+     * Applies a classification to this ticket.
+     *
+     * <p>Updates the ticket's category, priority, team, sentiment,
+     * and classification reason with values from the classification.</p>
+     *
+     * @param classification the classification to apply
+     * @throws NullPointerException if classification is null
+     */
+    public void applyClassification(final TicketClassification classification) {
+        Objects.requireNonNull(classification, "Ticket classification must not be null");
 
         this.category = classification.category();
         this.priority = classification.priority();
@@ -76,14 +94,25 @@ public class Ticket {
         this.classificationReason = classification.reason();
     }
 
-    public void updateMessage(String message) {
+    /**
+     * Updates the ticket's message.
+     *
+     * @param message the new message
+     */
+    public void updateMessage(final String message) {
         this.message = message;
     }
 
+    /**
+     * Marks this ticket as resolved/closed.
+     */
     public void close() {
         this.status = TicketStatus.RESOLVED;
     }
 
+    /**
+     * Reopens this ticket.
+     */
     public void reopen() {
         this.status = TicketStatus.OPEN;
     }
