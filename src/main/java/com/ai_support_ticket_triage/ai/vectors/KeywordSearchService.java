@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +42,22 @@ public class KeywordSearchService {
             "if",
             "how",
             "can"
+    );
+
+    private static final Map<String, String> TERM_NORMALIZATION = Map.of(
+            "charged", "charge",
+            "charges", "charge",
+            "charging", "charge",
+
+            "twice", "double",
+            "duplicate", "double",
+            "duplicates", "double",
+
+            "payments", "payment",
+            "paid", "payment",
+
+            "refunds", "refund",
+            "refunded", "refund"
     );
 
     private final DocumentChunkRepository documentChunkRepository;
@@ -90,21 +107,35 @@ public class KeywordSearchService {
                 .filter(word -> !word.isBlank())
                 .filter(word -> word.length() >= 3)
                 .filter(word -> !STOP_WORDS.contains(word))
+                .map(this::normalizeTerm)
                 .distinct()
                 .limit(MAX_KEYWORDS)
                 .toList();
+    }
+
+    private String normalizeTerm(String word) {
+
+        return TERM_NORMALIZATION.getOrDefault(
+                word,
+                word
+        );
     }
 
     private KeywordSearchResult toResult(
             DocumentChunkEntity chunk,
             List<String> keywords
     ) {
+        String normalizedText = normalizeText(chunk.getText());
 
-        String text = chunk.getText().toLowerCase();
+        List<String> textWords = Arrays.asList(
+                normalizedText.split("\\s+")
+        );
+
 
         long matchedKeywords = keywords.stream()
-                .filter(text::contains)
+                .filter(textWords::contains)
                 .count();
+
 
         double keywordScore =
                 (double) matchedKeywords / keywords.size();
@@ -117,5 +148,24 @@ public class KeywordSearchService {
                 chunk.getText(),
                 keywordScore
         );
+    }
+
+    private String normalizeText(String text) {
+
+        return Arrays.stream(
+                        text.toLowerCase()
+                                .split("\\s+")
+                )
+                .map(word ->
+                        word.replaceAll("[^a-z0-9]", "")
+                )
+                .map(this::normalizeTerm)
+                .reduce(
+                        "",
+                        (result, word) ->
+                                result.isEmpty()
+                                        ? word
+                                        : result + " " + word
+                );
     }
 }
