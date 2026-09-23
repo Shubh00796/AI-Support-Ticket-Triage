@@ -531,7 +531,7 @@ Qdrant stores the vector embeddings used for similarity search over document chu
 
 ### What does the LLM actually do?
 
-The LLM reads the prompt and returns the most likely classification plus a short explanation.
+The LLM reads the prompt and returns the most likely classification plus a short explanation
 In this project, Ollama hosts that model locally or remotely.
 
 ### Why validate LLM output?
